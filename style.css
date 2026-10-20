@@ -43,6 +43,8 @@ button.focus { outline: 3px solid var(--sun); outline-offset: 2px; }
 kbd { background: var(--paper); color: var(--ink); border-radius: 5px; padding: 0 6px; font-family: var(--body); font-weight: 900; margin-right: 4px; }
 #stick { position: absolute; width: 120px; height: 120px; border-radius: 50%; background: rgba(246, 236, 212, 0.2); border: 3px solid rgba(246, 236, 212, 0.5); }
 #knob { position: absolute; left: 32px; top: 32px; width: 50px; height: 50px; border-radius: 50%; background: rgba(246, 236, 212, 0.85); }
+#keys { position: absolute; left: 14px; bottom: calc(14px + env(safe-area-inset-bottom, 0px)); color: var(--paper); font-size: 12px; font-weight: 700; text-shadow: 0 1px 3px #000; }
+#keys kbd { font-size: 11px; }
 #touch { display: none; }
 @media (pointer: coarse) {
   #touch { display: block; }
@@ -51,6 +53,8 @@ kbd { background: var(--paper); color: var(--ink); border-radius: 5px; padding: 
   #b-act.on { animation: pulse 1s infinite alternate; }
   #b-use { right: 104px; bottom: calc(96px + env(safe-area-inset-bottom, 0px)); } #b-jump { right: 30px; bottom: calc(30px + env(safe-area-inset-bottom, 0px)); }
   #b-eat { right: 104px; bottom: calc(26px + env(safe-area-inset-bottom, 0px)); } #b-sleep { right: 22px; bottom: calc(196px + env(safe-area-inset-bottom, 0px)); }
+  #keys { display: none; }
+  #b-help { right: 174px; top: calc(56px + env(safe-area-inset-top, 0px)); width: 48px !important; height: 48px !important; }
   #b-bag { right: 12px; top: calc(56px + env(safe-area-inset-top, 0px)); width: 48px !important; height: 48px !important; } #b-map { right: 66px; top: calc(56px + env(safe-area-inset-top, 0px)); width: 48px !important; height: 48px !important; } #b-menu { right: 120px; top: calc(56px + env(safe-area-inset-top, 0px)); width: 48px !important; height: 48px !important; }
   #hotbar { left: auto; right: 180px; transform: none; } #hotbar button { width: 50px; height: 50px; } #hotbar em { display: none; }
   #prompt { bottom: auto; top: 42%; }
@@ -95,6 +99,14 @@ kbd { background: var(--paper); color: var(--ink); border-radius: 5px; padding: 
 .check .have { color: var(--green); } .check .miss { color: var(--red); }
 .col { display: flex; flex-direction: column; gap: 8px; max-width: 280px; margin: 0 auto; }
 .pbox .help { color: #6a5a40; text-shadow: none; margin-top: 12px; text-align: center; }
+.tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; } .tabs button { font-size: 13px; padding: 5px 10px; } .tabs button.on { background: var(--sea); color: #fff; }
+.guide { display: flex; flex-direction: column; gap: 6px; }
+.entry { display: grid; grid-template-columns: 44px 1fr; gap: 8px; padding: 8px 10px; background: var(--paper2); border-radius: 8px; } .entry.none { opacity: 0.55; }
+.entry .ic { font-size: 30px; text-align: center; } .entry > div { min-width: 0; } .entry p { margin: 3px 0 0; font-size: 13px; line-height: 1.5; }
+.entry em { font-style: normal; font-weight: 900; color: var(--sea); margin-right: 6px; } .entry .own { color: var(--wood); font-weight: 900; } .entry .tag { font-size: 12px; color: var(--green); font-weight: 900; }
+.pbox.items, .pbox.howto { width: min(720px, 100%); }
+.helptext { font-size: 15px; line-height: 1.7; } .helptext h4 { margin: 10px 0 4px; color: var(--sea); } .helptext li { margin-bottom: 4px; } .helptext p { margin: 0 0 8px; }
+.keys { width: 100%; border-collapse: collapse; font-size: 13px; } .keys th, .keys td { padding: 5px 6px; border-bottom: 1px solid rgba(122, 82, 50, 0.25); text-align: left; } .keys tr:first-child th { color: var(--sea); }
 .pages p { font-family: var(--hand); font-size: 20px; line-height: 1.5; margin: 0 0 12px; padding-bottom: 10px; border-bottom: 1px dashed rgba(122, 82, 50, 0.4); }
 #bigmap { width: 100%; max-width: 600px; aspect-ratio: 1; display: block; margin: 0 auto; border-radius: 8px; border: 3px solid var(--wood); }
 .pbox.end { text-align: center; width: min(480px, 100%); } .pbox.end .say { font-family: var(--hand); font-size: 22px; } .stats { color: var(--sea); font-weight: 900; }

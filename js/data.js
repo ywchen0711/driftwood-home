@@ -38,6 +38,36 @@ export const ITEMS = {
   flare:    I('信號彈', 'Flare gun', '🎆'),
   photo:    I('家人的照片', 'Family photo', '🖼️'),
 };
+// the item guide: what each thing is for, and where it comes from
+export const ITEM_INFO = {
+  stick:   [['撿地上的樹枝堆，或在叢林樹旁按 E', 'Stick piles on the ground, or press E at a jungle tree'], ['營火、工具、火把、雨水收集器、船帆；也能當柴燒（1 小時）', 'Campfires, tools, torches, the rain catcher, the sail; burns for 1 hour']],
+  wood:    [['手拿石斧，對叢林樹或棕櫚樹按 E 或 F 砍倒', 'Hold the stone axe and press E or F at a jungle tree or palm'], ['避難小屋、信號火堆、木筏、船槳；最好的柴（3 小時）', 'The shelter, signal fire, raft and oar; the best fuel (3 hours)']],
+  stone:   [['海灘和草地上的石頭', 'Loose stones on the beach and in the grass'], ['石刀、石斧、魚叉、營火；吃椰子時要用石頭敲開', 'Knife, axe, spear, campfire; you also need one to crack coconuts']],
+  flint:   [['山坡上的深色岩石', 'The dark rocks on the hillside'], ['和石刀一起用來點火（不會用掉）', 'With the knife, strikes sparks to light fires (it is not used up)']],
+  fiber:   [['草叢按 E（拿著石刀能拿更多）', 'Grass clumps (more if you hold the knife)'], ['繩子、工具的綁繩、火把', 'Rope, tool bindings, torches']],
+  leaf:    [['棕櫚樹按 E（拿著石刀一次兩片）', 'Palm trees (two at a time with the knife)'], ['雨水收集器、避難小屋屋頂、信號火堆；也能燒', 'The rain catcher, the shelter roof, the signal fire; it also burns']],
+  rope:    [['用 3 份纖維做，漂流箱裡也有', 'Made from 3 fibre; also found in crates'], ['避難小屋、木筏、船帆', 'The shelter, the raft and the sail']],
+  cloth:   [['翻覆的船和漂流箱', 'The capsized boat and the crates'], ['目前沒有用途，留著當紀念', 'No use yet: a keepsake from the boat']],
+  tarp:    [['第 3 天之後的漂流箱', 'A crate from day 3 on'], ['做木筏的船帆', 'The raft’s sail']],
+  nails:   [['漂流箱（第 3 天起）', 'Crates (from day 3)'], ['蓋木筏', 'Building the raft']],
+  bottle:  [['翻覆的船、漂流箱', 'The capsized boat and the crates'], ['在泉水或雨水收集器裝水，帶著走', 'Fill it at the spring or the rain catcher to carry water']],
+  water:   [['用空瓶在泉水或雨水收集器裝', 'Fill an empty bottle at the spring or the rain catcher'], ['喝了解渴（+35），出海要帶 3 瓶', 'Drink for +35 water; take 3 bottles on the voyage']],
+  coconut: [['棕櫚樹按 E 搖下來（每天會再長）', 'Shake a palm with E (they grow back each day)'], ['吃喝都補（食物 +12、水 +18），要有石頭才能敲開', 'Food +12 and water +18; you need a stone to crack it']],
+  berries: [['野莓叢', 'Berry bushes'], ['食物 +7、水 +3', 'Food +7, water +3']],
+  banana:  [['香蕉樹', 'Banana plants'], ['食物 +14', 'Food +14']],
+  crab:    [['拿刀或魚叉，在海灘上的螃蟹旁按 E', 'With a knife or spear, press E by a crab on the beach'], ['生吃可能拉肚子，放在營火上烤熟', 'Eaten raw it may make you sick; cook it at a fire']],
+  crabc:   [['在燒著的營火烤生螃蟹', 'Cook a raw crab at a lit campfire'], ['食物 +24', 'Food +24']],
+  fish:    [['拿著魚叉在淺水游泳，靠近魚按 E 或 F', 'Swim in the shallows holding the spear, and press E or F near a fish'], ['生吃可能拉肚子，放在營火上烤熟', 'Eaten raw it may make you sick; cook it at a fire']],
+  fishc:   [['在燒著的營火烤生魚', 'Cook a raw fish at a lit campfire'], ['食物 +30，最飽的食物', 'Food +30: the most filling food']],
+  knife:   [['製作：石頭 2、纖維 1', 'Make: 2 stone, 1 fibre'], ['點火（配燧石）、多拿纖維和葉子、抓螃蟹', 'Lighting fires (with flint), more fibre and leaves, catching crabs']],
+  axe:     [['製作：樹枝 2、石頭 2、纖維 2', 'Make: 2 sticks, 2 stone, 2 fibre'], ['砍樹得到木頭', 'Chopping trees for logs']],
+  spear:   [['製作：樹枝 2、石頭 1、纖維 1', 'Make: 2 sticks, 1 stone, 1 fibre'], ['抓螃蟹、在淺水叉魚', 'Catching crabs, and fish in the shallows']],
+  torch:   [['在燒著的營火旁製作：樹枝 1、纖維 1', 'Make beside a lit fire: 1 stick, 1 fibre'], ['拿在手上照明、稍微取暖，也能點燃信號火', 'Light and a little warmth in your hand; it can light the signal fire']],
+  compass: [['第 5 天的漂流箱', 'The crate on day 5'], ['自己划木筏回家的必要裝備', 'Needed to sail home by raft']],
+  map:     [['第 6 天的漂流箱', 'The crate on day 6'], ['自己划木筏回家的必要裝備', 'Needed to sail home by raft']],
+  flare:   [['第 8 天的漂流箱', 'The crate on day 8'], ['有船經過時發射，立刻獲救', 'Fire it while a ship is passing to be rescued at once']],
+  photo:   [['第 4 天的漂流箱', 'The crate on day 4'], ['家人的照片——提醒自己為什麼要回家', 'Your family: a reminder of why you must get home']],
+};
 export const FOOD_IDS = Object.keys(ITEMS).filter((k) => ITEMS[k].food || ITEMS[k].drink);
 export const TOOLS = ['knife', 'axe', 'spear', 'torch'];
 

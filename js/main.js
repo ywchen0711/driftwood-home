@@ -1,7 +1,7 @@
 // DRIFTWOOD HOME — the page: the stormy night and the capsize, life on the island (walking, swimming, gathering,
 // crafting, building, day and night), the HUD and panels, and the way home.
 import * as THREE from 'three';
-import { ITEMS, RECIPES, SECONDS_PER_HOUR, NIGHT, JOURNAL, ENDINGS, VOYAGE, newState } from './data.js';
+import { ITEMS, ITEM_INFO, RECIPES, SECONDS_PER_HOUR, NIGHT, JOURNAL, ENDINGS, VOYAGE, SHIPS, newState } from './data.js';
 import { heightAt, R, SPRING, HILL, START, WRECK } from './world.js';
 import { newGame, tick, gather, craft, canCraft, light, feed, cook, consume, stockOf, isFelled, cratesFor, openCrate, sleep, faint, voyageMissing, setSail, firesNear, count, day, hour, rainAt, shipNow, catchAnimal, fireFlare, collectRain, recipe } from './survive.js';
 import { buildIsland, thingMesh, showStock, stumpMesh, crateMesh, builtMesh, raftMesh, makePerson, posePerson, toolMesh, crabMesh, fishMesh, sharkFin, dogMesh, shipMesh, sailboat, homeScene, makeRain, stepRain, smokePuff, box } from './scene.js';
@@ -89,14 +89,14 @@ addEventListener('pointerup', (e) => { if (e.pointerType !== 'touch' && mouseUse
 addEventListener('pointermove', (e) => { if (!dragging) return; dragMoved += Math.abs(e.clientX - lastX) + Math.abs(e.clientY - lastY); turnCam(e.clientX - lastX, e.clientY - lastY, 0.006); lastX = e.clientX; lastY = e.clientY; });
 canvas.addEventListener('wheel', (e) => { cam.dist = Math.max(4, Math.min(22, cam.dist * (e.deltaY > 0 ? 1.1 : 0.9))); e.preventDefault(); }, { passive: false });
 canvas.addEventListener('contextmenu', (e) => e.preventDefault());
-const KEYMAP = { Space: 'jump', KeyE: 'act', KeyF: 'use', Tab: 'bag', KeyI: 'bag', KeyM: 'map', KeyJ: 'journal', KeyQ: 'quick', KeyZ: 'sleep', Escape: 'menu', Digit1: 'h0', Digit2: 'h1', Digit3: 'h2', Digit4: 'h3', Digit5: 'h4' };
+const KEYMAP = { Space: 'jump', KeyE: 'act', KeyF: 'use', Tab: 'bag', KeyI: 'items', KeyH: 'help', KeyM: 'map', KeyJ: 'journal', KeyQ: 'quick', KeyZ: 'sleep', Escape: 'menu', Digit1: 'h0', Digit2: 'h1', Digit3: 'h2', Digit4: 'h3', Digit5: 'h4' };
 addEventListener('keydown', (e) => {
   if (e.target.tagName === 'INPUT') return; keys.add(e.code); sound.start();
   if (['Space', 'Tab', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code)) e.preventDefault();
   if (e.repeat) return;
   if (S_.mode === 'title') { if (e.code === 'Enter' || e.code === 'Space') begin(); return; }
   if (S_.mode === 'intro') { skipIntro(); return; }
-  if (S_.panel) { if (e.code === 'Escape' || (e.code === 'Tab' && S_.panel === 'bag') || (e.code === 'KeyM' && S_.panel === 'map') || (e.code === 'KeyJ' && S_.panel === 'journal')) closePanel(); else if (e.code === 'Enter' || e.code === 'Space') panelPress(); else if (e.code.startsWith('Arrow')) panelMove(e.code === 'ArrowDown' || e.code === 'ArrowRight' ? 1 : -1); return; }
+  if (S_.panel) { if (e.code === 'Escape' || (e.code === 'Tab' && S_.panel === 'bag') || (e.code === 'KeyM' && S_.panel === 'map') || (e.code === 'KeyJ' && S_.panel === 'journal') || (e.code === 'KeyI' && S_.panel === 'items') || (e.code === 'KeyH' && S_.panel === 'howto')) closePanel(); else if (e.code === 'Enter' || e.code === 'Space') panelPress(); else if (e.code.startsWith('Arrow')) panelMove(e.code === 'ArrowDown' || e.code === 'ArrowRight' ? 1 : -1); return; }
   if (KEYMAP[e.code]) act.add(KEYMAP[e.code]);
 });
 addEventListener('keyup', (e) => keys.delete(e.code));
@@ -106,7 +106,7 @@ canvas.addEventListener('touchstart', (e) => { sound.start(); if (S_.mode === 'i
 canvas.addEventListener('touchmove', (e) => { for (const t of e.changedTouches) { if (t.identifier === touch.id) { let dx = t.clientX - touch.ox, dy = t.clientY - touch.oy; const d = Math.hypot(dx, dy); if (d > 55) { dx *= 55 / d; dy *= 55 / d; } touch.x = dx / 55; touch.y = dy / 55; $('knob').style.transform = `translate(${dx}px,${dy}px)`; } if (t.identifier === touch.camId) { turnCam(t.clientX - touch.cx, t.clientY - touch.cy, 0.008); touch.cx = t.clientX; touch.cy = t.clientY; } } }, { passive: true });
 const endTouch = (e) => { for (const t of e.changedTouches) { if (t.identifier === touch.id) { touch.id = null; touch.x = touch.y = 0; $('stick').hidden = true; $('knob').style.transform = ''; } if (t.identifier === touch.camId) touch.camId = null; } };
 canvas.addEventListener('touchend', endTouch); canvas.addEventListener('touchcancel', endTouch);
-for (const [id, a] of [['b-act', 'act'], ['b-use', 'use'], ['b-jump', 'jump'], ['b-bag', 'bag'], ['b-map', 'map'], ['b-menu', 'menu'], ['b-eat', 'quick'], ['b-sleep', 'sleep']]) $(id).addEventListener('pointerdown', (e) => { e.preventDefault(); e.stopPropagation(); sound.start(); if (S_.panel && (a === 'bag' || a === 'map' || a === 'menu')) closePanel(); else act.add(a); });
+for (const [id, a] of [['b-act', 'act'], ['b-use', 'use'], ['b-jump', 'jump'], ['b-bag', 'bag'], ['b-map', 'map'], ['b-menu', 'menu'], ['b-eat', 'quick'], ['b-sleep', 'sleep'], ['b-help', 'help']]) $(id).addEventListener('pointerdown', (e) => { e.preventDefault(); e.stopPropagation(); sound.start(); if (S_.panel && (a === 'bag' || a === 'map' || a === 'menu' || a === 'help')) closePanel(); else act.add(a); });
 $('hotbar').addEventListener('pointerdown', (e) => { const b = e.target.closest('[data-h]'); if (!b) return; e.preventDefault(); act.add('h' + b.dataset.h); });
 // game controllers (standard mapping): left stick move · right stick camera · A jump · X act · B use tool · Y bag · LB/RB tools · LT sprint · Start menu · View map · R3 quick eat
 const PAD = { ix: 0, iz: 0, sprint: false, prev: [], used: false, connected: false };
@@ -218,7 +218,7 @@ function front(d) { return { x: P.x + Math.sin(P.face) * d, z: P.z + Math.cos(P.
 function bagPanel() {
   showPanel('bag', L('背包與製作', 'Bag & crafting'), () => {
     const items = Object.entries(S.inv).filter(([, n]) => n > 0);
-    let h = `<div class="cols"><section><h3>${L('背包', 'Bag')}</h3>${items.length ? '<div class="grid">' + items.map(([k, n]) => { const it = ITEMS[k], use = it.food || it.drink ? L('吃／喝', 'Eat / drink') : it.tool ? (S.hand === k ? L('收起', 'Put away') : L('拿在手上', 'Hold')) : k === 'flare' ? L('發射', 'Fire') : ''; return `<div class="it"><span class="ic">${it.icon}</span><b>${iname(k)}</b><small>×${n}</small>${use ? btn(use, () => useItem(k)) : ''}</div>`; }).join('') + '</div>' : `<p class="hint">${L('背包是空的。在島上四處走走，按 E 撿東西。', 'Empty. Walk around the island and press E to pick things up.')}</p>`}</section>`;
+    let h = `<div class="tabs">${btn(L('📖 物品圖鑑（I）', '📖 Item guide (I)'), itemsPanel)}${btn(L('❓ 說明（H）', '❓ How to play (H)'), () => helpPanel())}</div><div class="cols"><section><h3>${L('背包', 'Bag')}</h3>${items.length ? '<div class="grid">' + items.map(([k, n]) => { const it = ITEMS[k], use = it.food || it.drink ? L('吃／喝', 'Eat / drink') : it.tool ? (S.hand === k ? L('收起', 'Put away') : L('拿在手上', 'Hold')) : k === 'flare' ? L('發射', 'Fire') : ''; return `<div class="it"><span class="ic">${it.icon}</span><b>${iname(k)}</b><small>×${n}</small>${use ? btn(use, () => useItem(k)) : ''}</div>`; }).join('') + '</div>' : `<p class="hint">${L('背包是空的。在島上四處走走，按 E 撿東西。', 'Empty. Walk around the island and press E to pick things up.')}</p>`}</section>`;
     h += `<section><h3>${L('製作', 'Make')}</h3><div class="list">`;
     for (const rc of RECIPES) {
       if (rc.onto) continue;
@@ -276,6 +276,70 @@ function raftPanel() {
   });
 }
 const mapBase = (() => { const n = 300, c = document.createElement('canvas'); c.width = c.height = n; const g = c.getContext('2d'), img = g.createImageData(n, n), k = (R * 1.7 * 2) / n; for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) { const wx = (x - n / 2) * k, wz = (y - n / 2) * k, h = heightAt(wx, wz), i = (y * n + x) * 4; const col = h < -2.5 ? [26, 98, 168] : h < 0.1 ? [52, 160, 214] : h < 1.5 ? [240, 220, 160] : h < 10 ? [90, 170, 80] : [140, 132, 118]; img.data.set([...col, 255], i); } g.putImageData(img, 0, 0); return { c, k, n }; })();
+// ---------------------------------------------------------------- the item guide (I): every item, what it does and where it comes from
+const GROUPS = [
+  [['材料', 'Materials'], ['stick', 'wood', 'stone', 'flint', 'fiber', 'leaf', 'rope', 'cloth', 'tarp', 'nails', 'bottle']],
+  [['食物與水', 'Food & water'], ['water', 'coconut', 'berries', 'banana', 'crab', 'crabc', 'fish', 'fishc']],
+  [['工具', 'Tools'], ['knife', 'axe', 'spear', 'torch']],
+  [['特別的東西', 'Special things'], ['compass', 'map', 'flare', 'photo']],
+];
+let guideGroup = 0;
+function itemsPanel() {
+  showPanel('items', L('物品圖鑑', 'Item guide'), () => {
+    let h = `<p class="hint">${L('島上找得到、做得出來的全部東西。數字是你現在有幾個；灰色的是還沒拿到的。', 'Everything you can find or make on the island. The number is how many you have; grey means you have none yet.')}</p><div class="tabs">`;
+    GROUPS.forEach(([name], i) => { h += btn(N(name), () => { guideGroup = i; itemsPanel(); }, { cls: i === guideGroup ? 'on' : '' }); });
+    h += '</div><div class="guide">';
+    for (const id of GROUPS[guideGroup][1]) {
+      const it = ITEMS[id], [from, use] = ITEM_INFO[id], n = count(S, id), rc = RECIPES.find((r) => r.id === id);
+      const stats = it.food || it.drink ? `<span class="tag">${it.food ? L(`食物 +${it.food}`, `food +${it.food}`) : ''}${it.food && it.drink ? ' · ' : ''}${it.drink ? L(`水 +${it.drink}`, `water +${it.drink}`) : ''}</span>` : '';
+      h += `<div class="entry${n ? '' : ' none'}"><span class="ic">${it.icon}</span><div><b>${iname(id)}</b> <small class="own">×${n}</small> ${stats}<p><em>${L('取得', 'Where')}</em>${N(from)}</p><p><em>${L('用途', 'Use')}</em>${N(use)}</p>${rc ? `<p><em>${L('配方', 'Recipe')}</em>${Object.entries(rc.needs).map(([k, m]) => `${ITEMS[k].icon} ${iname(k)} ×${m}`).join('、')}</p>` : ''}</div></div>`;
+    }
+    return h + `</div><p class="hint">${L('建築（營火、雨水收集器、小屋、信號火堆、木筏）在背包的「製作」裡。按 Tab 打開背包。', 'Buildings (campfire, rain catcher, shelter, signal fire, raft) are under Make in the bag. Press Tab for the bag.')}</p>`;
+  });
+}
+// ---------------------------------------------------------------- how to play (H)
+const HELP = [
+  ['goal', ['目標', 'Goal'], () => L(
+    `<p>暴風雨把 Josh 的帆船翻了過來，他被沖上這座無人島。你要讓他<b>活下來</b>，並且想辦法<b>回到溫暖的家</b>。</p><p>島上有吃的、喝的、能做工具和蓋房子的材料，每天早上海浪還會把船上的東西（漂流箱）沖上岸。</p><p>回家有兩條路（詳見「回家」）：在山頂點燃<b>信號火</b>讓經過的船看見，或是自己造<b>木筏</b>划回家。</p>`,
+    `<p>A storm flipped Josh's sailboat and washed him up on this deserted island. Keep him <b>alive</b>, and find a way <b>back to his warm home</b>.</p><p>The island has food, water, and materials for tools and buildings, and every morning the waves bring things from the boat ashore (crates).</p><p>There are two ways home (see "Home"): light a <b>signal fire</b> on the hilltop for a passing ship, or build a <b>raft</b> and sail home yourself.</p>`)],
+  ['needs', ['五個數值', 'Needs'], () => L(
+    `<ul><li>❤️ <b>生命</b>：其他數值歸零、太冷、生病時會下降；吃飽喝足又溫暖時會慢慢恢復。歸零會昏倒，隔天早上醒來但掉一些食物。</li><li>🍖 <b>飽足</b>：大約一天就會餓扁。吃水果、烤魚、烤螃蟹。</li><li>💧 <b>口渴</b>：比肚子餓得更快。喝泉水、瓶裝水、椰子。<b>海水不能喝</b>。</li><li>⚡ <b>體力</b>：走路、衝刺、游泳都會累。睡覺恢復，睡在小屋裡最快。</li><li>🌡️ <b>體溫</b>：晚上和下雨會變冷，濕身更冷。靠近營火、待在小屋、拿著火把會暖和。</li></ul><p>生吃螃蟹或魚可能<b>拉肚子</b>，會一直扣血。</p>`,
+    `<ul><li>❤️ <b>Health</b> drops when another need runs out, when you are freezing, or when you are sick; it recovers slowly when you are fed, watered and warm. If it runs out, Josh faints and wakes the next morning, missing some food.</li><li>🍖 <b>Food</b> lasts about a day. Eat fruit, grilled fish, roast crab.</li><li>💧 <b>Water</b> runs out faster than food. Drink at the spring, from bottles, or coconuts. <b>Seawater is not drinkable.</b></li><li>⚡ <b>Energy</b> drains as you walk, sprint and swim. Sleep restores it, fastest in the shelter.</li><li>🌡️ <b>Warmth</b> falls at night and in rain, more when you are wet. Fires, the shelter and a torch keep you warm.</li></ul><p>Raw crab or fish can make you <b>sick</b>, which keeps hurting you for a while.</p>`)],
+  ['start', ['第一天', 'Day one'], () => L(
+    `<ol><li>翻找旁邊<b>翻覆的船</b>（E）：有布、繩子和空瓶子。</li><li>到島中央的<b>泉水</b>喝水，用瓶子裝水帶著走。（M 看地圖，藍點就是泉水）</li><li>撿<b>石頭</b>和<b>草（纖維）</b>，做<b>石刀</b>（Tab 背包 → 製作）。</li><li>撿<b>樹枝</b>，做<b>石斧</b>和<b>魚叉</b>。</li><li>到<b>山坡</b>找深色的<b>燧石</b>。</li><li>天黑前蓋<b>營火</b>（樹枝 5、石頭 4），用燧石＋石刀點火。</li><li>用石斧砍樹拿木頭，摘棕櫚葉，搓繩子，蓋<b>避難小屋</b>。晚上在小屋睡覺（Z），會存檔。</li><li>每天早上去海灘看看有沒有<b>漂流箱</b>（地圖上的棕色點）。</li></ol>`,
+    `<ol><li>Search the <b>capsized boat</b> nearby (E): cloth, rope and an empty bottle.</li><li>Drink at the <b>spring</b> in the middle of the island and fill your bottle. (M for the map: the blue dot is the spring.)</li><li>Pick up <b>stones</b> and <b>grass (fibre)</b>, and make a <b>stone knife</b> (Tab, bag → Make).</li><li>Gather <b>sticks</b> for a <b>stone axe</b> and a <b>spear</b>.</li><li>Look on the <b>hillside</b> for dark <b>flint</b>.</li><li>Before dark, build a <b>campfire</b> (5 sticks, 4 stones) and light it with flint and the knife.</li><li>Chop logs with the axe, take palm leaves, twist rope, and build a <b>shelter</b>. Sleep there at night (Z); it saves.</li><li>Each morning, check the beach for <b>crates</b> (brown dots on the map).</li></ol>`)],
+  ['craft', ['製作與建築', 'Making things'], () => {
+    let h = L('<p>打開背包（Tab），右邊的「製作」列出全部配方。綠色數字表示材料夠，紅色表示還缺。<b>建築會蓋在 Josh 面前</b>，先轉向想蓋的地方再按。</p>', '<p>Open the bag (Tab): Make lists every recipe. Green numbers mean you have enough, red means you are short. <b>Buildings go in front of Josh</b>, so face where you want one first.</p>') + '<ul>';
+    for (const rc of RECIPES) h += `<li><b>${N(rc.name)}</b>：${Object.entries(rc.needs).map(([k, m]) => `${ITEMS[k].icon}${m}`).join(' ')} — ${N(rc.note)}</li>`;
+    return h + '</ul>' + L('<p>對著蓋好的東西按 E：營火可以點火、加柴、烤食物、做火把；雨水收集器可以裝水；小屋可以睡覺；信號火堆可以點燃。</p>', '<p>Press E at something you built: a campfire can be lit, fed, used to cook and to make torches; the rain catcher fills bottles; the shelter is for sleep; the signal fire can be lit.</p>');
+  }],
+  ['home', ['回家', 'Home'], () => L(
+    `<h4>方法一：信號火獲救</h4><p>在<b>山頂</b>（地圖上的灰色圓圈）蓋<b>信號火堆</b>（木頭 8、棕櫚葉 6）。偶爾會有<b>船從遠方經過</b>，聽到汽笛聲、看到畫面提示時，趕快跑到山頂點燃它（要有燧石和石刀，或拿著火把）。船只會停留一小段時間！漂流箱裡的<b>信號彈</b>在船經過時發射也能獲救。</p><h4>方法二：划木筏回家</h4><p>在<b>海邊沙灘</b>蓋<b>木筏</b>（木頭 12、繩子 6、釘子 1），對著木筏按 E 裝上<b>船帆</b>（防水布、樹枝、繩子）和<b>船槳</b>（木頭 2）。出發前要帶：<b>指南針</b>、<b>海圖</b>（都會漂上岸）、<b>3 瓶水</b>、<b>3 份熟食或水果</b>。木筏的清單會告訴你還缺什麼。</p>`,
+    `<h4>Way one: rescue by signal fire</h4><p>Build a <b>signal fire</b> (8 logs, 6 palm leaves) on the <b>hilltop</b> (the grey circle on the map). Now and then <b>a ship passes in the distance</b>: when you hear the horn and see the message, hurry up and light it (you need flint and the knife, or a burning torch). The ship does not stay long! A <b>flare</b> from a crate, fired while a ship is passing, also works.</p><h4>Way two: sail home by raft</h4><p>Build a <b>raft</b> (12 logs, 6 rope, 1 nails) on the <b>beach by the water</b>, then press E at it to fit a <b>sail</b> (tarp, sticks, rope) and an <b>oar</b> (2 logs). Take the <b>compass</b> and the <b>sea chart</b> (both wash ashore), <b>3 bottles of water</b> and <b>3 cooked meals or fruit</b>. The raft's checklist shows what is still missing.</p>`)],
+  ['controls', ['操作', 'Controls'], () => `<table class="keys"><tr><th></th><th>${L('鍵盤滑鼠', 'Keyboard & mouse')}</th><th>${L('控制器', 'Controller')}</th><th>${L('觸控', 'Touch')}</th></tr>` + [
+    [L('移動／衝刺', 'Move / sprint'), 'WASD · Shift', L('左搖桿 · LT', 'Left stick · LT'), L('左邊拖曳', 'Drag left side')],
+    [L('轉視角／縮放', 'Camera / zoom'), L('拖曳 · 滾輪', 'Drag · wheel'), L('右搖桿', 'Right stick'), L('右邊拖曳', 'Drag right side')],
+    [L('跳', 'Jump'), L('空白鍵', 'Space'), 'A', '⤒'],
+    [L('採集／互動', 'Gather / interact'), 'E', 'X', '✋'],
+    [L('使用手上的工具', 'Use the tool in hand'), L('F 或左鍵', 'F or click'), 'B', '🪓'],
+    [L('換工具', 'Change tool'), '1–5', 'LB / RB', L('點工具列', 'Tap the hotbar')],
+    [L('吃東西／喝水', 'Eat or drink'), 'Q', 'R3', '🍽️'],
+    [L('睡覺', 'Sleep'), 'Z', L('十字鍵↑', 'D-pad up'), '💤'],
+    [L('背包與製作', 'Bag & crafting'), 'Tab', 'Y', '🎒'],
+    [L('物品圖鑑', 'Item guide'), 'I', L('選單裡', 'In the menu'), L('選單裡', 'In the menu')],
+    [L('說明', 'How to play'), 'H', L('選單裡', 'In the menu'), '❓'],
+    [L('地圖／日記', 'Map / journal'), 'M / J', 'View', '🗺️'],
+    [L('選單', 'Menu'), 'Esc', 'Start', '☰'],
+  ].map((r) => `<tr>${r.map((c, i) => (i ? `<td>${c}</td>` : `<th>${c}</th>`)).join('')}</tr>`).join('') + '</table>' + L('<p class="hint">在面板裡可以用方向鍵／十字鍵選按鈕，Enter／A 按下，Esc／B 關閉。</p>', '<p class="hint">In panels, arrows / D-pad pick a button, Enter / A presses it, Esc / B closes.</p>')],
+  ['tips', ['小技巧', 'Tips'], () => L(
+    `<ul><li>Q 會自動吃喝最需要的東西（口渴先喝、餓了先吃熟食）。</li><li>椰子同時補食物和水，但要帶一顆石頭才敲得開。</li><li>一塊木頭能讓營火燒 3 小時；睡前多加幾塊柴。</li><li>下雨時營火燒得更快，雨水收集器會接到水。</li><li>不要游離岸邊太遠——深水有<b>鯊魚</b>。</li><li>海灘上的螃蟹會夾人，拿刀或魚叉再靠近。</li><li>拿著石刀採草和棕櫚葉會拿到更多。</li><li>樹被砍倒後過三天會再長出來；果實和樹枝也會慢慢長回來。</li><li>船大約每三天經過一次，白天比較常見。</li></ul>`,
+    `<ul><li>Q eats or drinks whatever you need most (water first when thirsty, cooked food first when hungry).</li><li>Coconuts give both food and water, but you need a stone to crack them.</li><li>A log keeps a fire going for 3 hours; feed it well before sleeping.</li><li>Rain makes fires burn faster, and fills the rain catcher.</li><li>Do not swim far from shore: there are <b>sharks</b> in deep water.</li><li>Crabs on the beach pinch; hold a knife or spear before you go near.</li><li>Holding the knife gets you more fibre and palm leaves.</li><li>Felled trees grow back after three days; fruit and sticks grow back too.</li><li>Ships pass about every three days, usually in daytime.</li></ul>`)],
+];
+let helpPage = 'goal';
+function helpPanel(page) {
+  if (page) helpPage = page;
+  showPanel('howto', L('遊戲說明', 'How to play'), () => `<div class="tabs">${HELP.map(([id, name]) => btn(N(name), () => helpPanel(id), { cls: id === helpPage ? 'on' : '' })).join('')}</div><div class="helptext">${HELP.find(([id]) => id === helpPage)[2]()}</div>`);
+}
 function mapPanel() {
   showPanel('map', L('島的地圖', 'Island map'), () => `<canvas id="bigmap" width="600" height="600"></canvas><p class="hint">${L('白色箭頭：Josh · 藍：泉水 · 橘：營火 · 綠：小屋 · 紅：信號火 · 棕：漂流箱', 'White arrow: Josh · blue: spring · orange: campfire · green: shelter · red: signal fire · brown: crates')}</p>`);
   const g = $('bigmap').getContext('2d'), s = 600 / mapBase.n, M = (x, z) => [(x / mapBase.k + mapBase.n / 2) * s, (z / mapBase.k + mapBase.n / 2) * s];
@@ -289,9 +353,9 @@ function mapPanel() {
 function journalPanel() { showPanel('journal', L('Josh 的日記', 'Josh\'s journal'), () => `<div class="pages">${S.journal.map((k) => `<p>${N(JOURNAL[k])}</p>`).join('')}</div>`); }
 const helpText = () => PAD.used ? L('控制器：左搖桿 移動 · 右搖桿 視角 · A 跳 · X 採集／互動 · B 使用工具 · Y 背包 · LB/RB 換工具 · LT 衝刺 · R3 吃東西 · 十字鍵↑ 睡覺 · View 地圖 · Start 選單', 'Controller: left stick move · right stick look · A jump · X gather / use · B use tool · Y bag · LB/RB tools · LT sprint · R3 eat · D-pad up sleep · View map · Start menu')
   : matchMedia('(pointer: coarse)').matches ? L('觸控：左邊拖曳移動 · 右邊拖曳轉視角 · 按鈕採集、使用工具、跳、吃、睡、背包、地圖', 'Touch: drag on the left to move · drag on the right to look · buttons to gather, use tools, jump, eat, sleep, open the bag and map')
-    : L('WASD 移動 · Shift 衝刺 · 空白鍵 跳 · E 採集／互動 · F 或左鍵 使用工具 · 1–5 換工具 · Q 吃喝 · Z 睡覺 · Tab 背包與製作 · M 地圖 · J 日記 · 拖曳 轉視角', 'WASD move · Shift sprint · Space jump · E gather / use · F or click: use tool · 1–5 tools · Q eat or drink · Z sleep · Tab bag & crafting · M map · J journal · drag to look');
+    : L('WASD 移動 · Shift 衝刺 · 空白鍵 跳 · E 採集／互動 · F 或左鍵 使用工具 · 1–5 換工具 · Q 吃喝 · Z 睡覺 · Tab 背包與製作 · I 物品圖鑑 · H 說明 · M 地圖 · J 日記 · 拖曳 轉視角', 'WASD move · Shift sprint · Space jump · E gather / use · F or click: use tool · 1–5 tools · Q eat or drink · Z sleep · Tab bag & crafting · I item guide · H help · M map · J journal · drag to look');
 function menuPanel() {
-  showPanel('menu', L('選單', 'Menu'), () => `<div class="col">${btn(L('繼續', 'Resume'), closePanel, { cls: 'go' })}${btn(L('日記', 'Journal'), journalPanel)}${btn(sound.musicOn ? L('音樂：開', 'Music: on') : L('音樂：關', 'Music: off'), () => { sound.setMusic(!sound.musicOn); menuPanel(); })}${btn(EN() ? '中文' : 'English', () => { setLang(EN() ? 'zh' : 'en'); menuPanel(); })}${btn(L('重新開始', 'New game'), () => showPanel('menu', L('重新開始？', 'Start over?'), () => `<p class="say">${L('所有進度都會清除。', 'All progress will be lost.')}</p><div class="col">${btn(L('確定', 'Yes'), () => { try { localStorage.removeItem(KEY); } catch (e) { /* ignore */ } location.reload(); }, { cls: 'red' })}${btn(L('取消', 'Cancel'), menuPanel)}</div>`))}</div><p class="help">${helpText()}</p>`);
+  showPanel('menu', L('選單', 'Menu'), () => `<div class="col">${btn(L('繼續', 'Resume'), closePanel, { cls: 'go' })}${btn(L('❓ 遊戲說明', '❓ How to play'), () => helpPanel())}${btn(L('📖 物品圖鑑', '📖 Item guide'), itemsPanel)}${btn(L('日記', 'Journal'), journalPanel)}${btn(sound.musicOn ? L('音樂：開', 'Music: on') : L('音樂：關', 'Music: off'), () => { sound.setMusic(!sound.musicOn); menuPanel(); })}${btn(EN() ? '中文' : 'English', () => { setLang(EN() ? 'zh' : 'en'); menuPanel(); })}${btn(L('重新開始', 'New game'), () => showPanel('menu', L('重新開始？', 'Start over?'), () => `<p class="say">${L('所有進度都會清除。', 'All progress will be lost.')}</p><div class="col">${btn(L('確定', 'Yes'), () => { try { localStorage.removeItem(KEY); } catch (e) { /* ignore */ } location.reload(); }, { cls: 'red' })}${btn(L('取消', 'Cancel'), menuPanel)}</div>`))}</div><p class="help">${helpText()}</p>`);
 }
 function doSleep() {
   const r = sleep(G, ctxNow());
@@ -384,7 +448,7 @@ function play(dt) {
   if (S_.sleepFade > 0) { S_.sleepFade -= dt; if (S_.sleepFade <= 0) $('fade').classList.remove('on'); }
   let mv = { sprint: false, speed: 0 };
   if (!S_.panel) {
-    if (act.has('bag')) bagPanel(); else if (act.has('map')) mapPanel(); else if (act.has('journal')) journalPanel(); else if (act.has('menu')) menuPanel();
+    if (act.has('bag')) bagPanel(); else if (act.has('items')) itemsPanel(); else if (act.has('help')) helpPanel(); else if (act.has('map')) mapPanel(); else if (act.has('journal')) journalPanel(); else if (act.has('menu')) menuPanel();
     if (act.has('act')) doAct(); if (act.has('use')) doUse(); if (act.has('quick')) quickEat(); if (act.has('sleep')) doSleep();
     for (let i = 0; i < 5; i++) if (act.has('h' + i)) { const id = S.hot[i]; S.hand = id && S.hand !== id ? id : null; holdTool(); }
     if (act.has('hnext') || act.has('hprev')) { const owned = S.hot.filter(Boolean); if (owned.length) { const i = owned.indexOf(S.hand), n = owned.length; S.hand = owned[((i + (act.has('hnext') ? 1 : -1)) % n + n) % n]; holdTool(); } }
@@ -477,7 +541,7 @@ function introStep(dt) {
 }
 function startPlay(fresh) {
   S_.mode = 'play'; $('hud').hidden = false; $('skip').hidden = true; $('story').classList.remove('on'); $('fade').classList.remove('on');
-  if (fresh) { S_.wakeT = 2.2; journalNote('wake'); }
+  if (fresh) { S_.wakeT = 2.2; journalNote('wake'); setTimeout(() => { if (S_.mode === 'play' && !S_.panel) helpPanel('goal'); }, 6500); }
   syncCrates(); syncBuilt(); cam.yaw = Math.atan2(P.x - WRECK.x, P.z - WRECK.z) + 0.5;
 }
 
@@ -568,10 +632,11 @@ function staticText() {
   $('t-lang').textContent = EN() ? '中文' : 'English'; $('t-help').textContent = helpText(); $('skip').textContent = L('跳過 ▸', 'Skip ▸');
   const tips = { 'b-act': L('採集', 'Gather'), 'b-use': L('工具', 'Tool'), 'b-eat': L('吃喝', 'Eat'), 'b-sleep': L('睡覺', 'Sleep'), 'b-bag': L('背包', 'Bag'), 'b-map': L('地圖', 'Map') };
   for (const [id, t] of Object.entries(tips)) $(id).title = t;
+  $('keys').innerHTML = L('<kbd>H</kbd> 說明 · <kbd>I</kbd> 物品圖鑑 · <kbd>Tab</kbd> 背包與製作 · <kbd>M</kbd> 地圖 · <kbd>Q</kbd> 吃喝', '<kbd>H</kbd> help · <kbd>I</kbd> item guide · <kbd>Tab</kbd> bag & crafting · <kbd>M</kbd> map · <kbd>Q</kbd> eat');
   $('lbl-hp').textContent = L('生命', 'Health'); $('lbl-hunger').textContent = L('飽足', 'Food'); $('lbl-thirst').textContent = L('口渴', 'Water'); $('lbl-energy').textContent = L('體力', 'Energy'); $('lbl-warmth').textContent = L('體溫', 'Warmth');
 }
 function setLang(l) { lang = l; try { localStorage.setItem('driftwood.lang', lang); } catch (e) { /* ignore */ } staticText(); }
 $('t-play').onclick = begin; $('t-lang').onclick = () => setLang(EN() ? 'zh' : 'en'); $('skip').onclick = skipIntro;
 staticText(); syncBuilt();
 requestAnimationFrame(frame);
-window.__dh = { S_, P, get S() { return S; }, G, keys, act, frame: (n) => frame(n), begin, skipIntro, startPlay, startEnding, bagPanel, mapPanel, journalPanel, builtPanel, raftPanel, doCraft, onEvent, syncBuilt, syncCrates };
+window.__dh = { S_, P, get S() { return S; }, G, keys, act, frame: (n) => frame(n), begin, skipIntro, startPlay, startEnding, bagPanel, itemsPanel, helpPanel, mapPanel, journalPanel, builtPanel, raftPanel, doCraft, onEvent, syncBuilt, syncCrates };

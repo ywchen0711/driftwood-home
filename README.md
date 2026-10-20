@@ -13,6 +13,7 @@ A 3D survival game for the browser. One stormy night Josh falls asleep on his li
 - **The island:** palms (coconuts and leaves), jungle trees (sticks, and logs with an axe), bananas, berries, grass for fibre, stones, flint on the hillside, a freshwater spring, crabs on the beach, fish in the shallows, and sharks past the reef. Crates from the wreck wash ashore every morning.
 - **Crafting:** a stone knife, stone axe, spear, rope and torch. Build a campfire (light it with flint and the knife, cook fish and crab, keep warm), a rain catcher, and a lean-to shelter where sleep is warmest and the game saves.
 - **Josh's journal** fills in as things happen.
+- **In-game help:** H opens a full guide (goal, the five needs, what to do on day one, every recipe, both ways home, controls and tips), and I opens the item guide with every item, where it comes from and what it is for. The guide opens by itself the first time.
 
 ## Two ways home
 
@@ -33,6 +34,8 @@ Either way ends at home, by the fire, with family and the dog.
 | Tools | 1–5 | LB / RB | Hotbar |
 | Eat or drink / sleep | Q / Z | R3 / D-pad up | 🍽️ / 💤 |
 | Bag & crafting / map / journal / menu | Tab / M / J / Esc | Y / View / — / Start | 🎒 / 🗺️ / ☰ |
+| Item guide (every item: where to find it, what it is for) | I | In the menu | In the menu |
+| How to play (goal, needs, day one, recipes, ways home, controls, tips) | H | In the menu | ❓ |
 
 ## Code
 
