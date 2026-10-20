@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>漂流島 · Driftwood Home</title>
+  <meta name="description" content="暴風雨的夜裡船翻了，Josh 醒來在一座無人島上。找水、生火、蓋小屋，想辦法回家。 A survival game: Josh's boat capsized in a storm, and he must survive on a deserted island and find his way home.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Noto+Sans+TC:wght@500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=1">
+  <script type="importmap">
+    { "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js" } }
+  </script>
+</head>
+<body>
+  <canvas id="view"></canvas>
+
+  <div id="title">
+    <div class="logo"><span class="zh">漂流島</span><span class="en">Driftwood Home</span></div>
+    <p id="t-sub"></p>
+    <div class="row"><button id="t-play" class="go big"></button><button id="t-lang"></button></div>
+    <p id="t-help" class="help"></p>
+  </div>
+
+  <div id="hud" hidden>
+    <div id="stats">
+      <div class="st"><i>❤️</i><span id="lbl-hp"></span><div class="bar hp"><b id="s-hp"></b></div></div>
+      <div class="st"><i>🍖</i><span id="lbl-hunger"></span><div class="bar food"><b id="s-hunger"></b></div></div>
+      <div class="st"><i>💧</i><span id="lbl-thirst"></span><div class="bar water"><b id="s-thirst"></b></div></div>
+      <div class="st"><i>⚡</i><span id="lbl-energy"></span><div class="bar energy"><b id="s-energy"></b></div></div>
+      <div class="st"><i>🌡️</i><span id="lbl-warmth"></span><div class="bar warm"><b id="s-warmth"></b></div></div>
+      <div id="status"></div>
+    </div>
+    <div id="when"></div>
+    <div id="hotbar"></div>
+    <div id="prompt" hidden></div>
+    <div id="stick" hidden><div id="knob"></div></div>
+    <div id="touch">
+      <button id="b-act">✋</button><button id="b-use">🪓</button><button id="b-jump">⤒</button>
+      <button id="b-eat">🍽️</button><button id="b-sleep">💤</button><button id="b-bag">🎒</button><button id="b-map">🗺️</button><button id="b-menu">☰</button>
+    </div>
+  </div>
+  <div id="note"></div>
+  <div id="story"></div>
+  <button id="skip" hidden></button>
+  <div id="toast"></div>
+  <div id="fade"></div>
+  <div id="panel" hidden></div>
+
+  <script type="module" src="js/main.js?v=1"></script>
+  <script src="/hub.js" data-pos="top-left" defer></script>
+</body>
+</html>
