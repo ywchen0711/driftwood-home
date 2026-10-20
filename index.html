@@ -49,7 +49,12 @@
   <div id="fade"></div>
   <div id="panel" hidden></div>
 
-  <script type="module" src="js/main.js?v=2"></script>
+  <script>
+    // if the game has not started within a few seconds (an old cached file, or a slow network), say what to do
+    addEventListener('error', function () { var t = document.getElementById('t-help'); if (t && !window.__dh) t.textContent = '載入失敗，請按 Ctrl+F5（手機請重新整理）· Loading failed: please press Ctrl+F5 (or reload on a phone)'; }, true);
+    setTimeout(function () { if (!window.__dh) { var t = document.getElementById('t-sub'); if (t) t.innerHTML = '遊戲還在載入……如果一直停在這裡，請按 Ctrl+F5（手機請重新整理）。<br>Still loading… if it stays here, press Ctrl+F5 (or reload on a phone).'; } }, 9000);
+  </script>
+  <script type="module" src="js/main.js?v=3"></script>
   <script src="/hub.js" data-pos="top-left" defer></script>
 </body>
 </html>

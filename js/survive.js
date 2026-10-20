@@ -1,7 +1,7 @@
 // DRIFTWOOD HOME — the rules of staying alive: the clock and the weather, Josh's body, gathering, crafting and building,
 // fire and cooking, crates and ships, sleep, and the two ways home. No DOM (node tests play it).
-import { ITEMS, RECIPES, RATE, WARM, CRATES, SHIPS, SHIP_HOURS, VOYAGE, NIGHT, newState } from './data.js';
-import { heightAt, layout, makeRng, HILL, START } from './world.js';
+import { ITEMS, RECIPES, RATE, WARM, CRATES, SHIPS, SHIP_HOURS, VOYAGE, NIGHT, newState } from './data.js?v=3';
+import { heightAt, layout, makeRng, HILL, START } from './world.js?v=3';
 
 export const day = (S) => Math.floor(S.time / 24) + 1;
 export const hour = (S) => S.time % 24;

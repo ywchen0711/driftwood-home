@@ -1,11 +1,11 @@
 // DRIFTWOOD HOME — the page: the stormy night and the capsize, life on the island (walking, swimming, gathering,
 // crafting, building, day and night), the HUD and panels, and the way home.
 import * as THREE from 'three';
-import { ITEMS, ITEM_INFO, RECIPES, SECONDS_PER_HOUR, NIGHT, JOURNAL, ENDINGS, VOYAGE, SHIPS, newState } from './data.js';
-import { heightAt, R, SPRING, HILL, START, WRECK } from './world.js';
-import { newGame, tick, gather, craft, canCraft, light, feed, cook, consume, stockOf, isFelled, cratesFor, openCrate, sleep, faint, voyageMissing, setSail, firesNear, count, day, hour, rainAt, shipNow, catchAnimal, fireFlare, collectRain, recipe } from './survive.js';
-import { buildIsland, thingMesh, showStock, stumpMesh, crateMesh, builtMesh, raftMesh, makePerson, posePerson, toolMesh, crabMesh, fishMesh, sharkFin, dogMesh, shipMesh, sailboat, homeScene, makeRain, stepRain, smokePuff, box } from './scene.js';
-import { Sound } from './audio.js';
+import { ITEMS, ITEM_INFO, RECIPES, SECONDS_PER_HOUR, NIGHT, JOURNAL, ENDINGS, VOYAGE, SHIPS, newState } from './data.js?v=3';
+import { heightAt, R, SPRING, HILL, START, WRECK } from './world.js?v=3';
+import { newGame, tick, gather, craft, canCraft, light, feed, cook, consume, stockOf, isFelled, cratesFor, openCrate, sleep, faint, voyageMissing, setSail, firesNear, count, day, hour, rainAt, shipNow, catchAnimal, fireFlare, collectRain, recipe } from './survive.js?v=3';
+import { buildIsland, thingMesh, showStock, stumpMesh, crateMesh, builtMesh, raftMesh, makePerson, posePerson, toolMesh, crabMesh, fishMesh, sharkFin, dogMesh, shipMesh, sailboat, homeScene, makeRain, stepRain, smokePuff, box } from './scene.js?v=3';
+import { Sound } from './audio.js?v=3';
 
 const $ = (id) => document.getElementById(id);
 // ---------------------------------------------------------------- language

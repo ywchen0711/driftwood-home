@@ -1,7 +1,7 @@
 // DRIFTWOOD HOME — everything you see: the island and the sea, the sky through the day, trees and rocks, what Josh
 // builds, Josh himself, crabs, fish, the shark, the ship, rain, the intro boat and the home at the end.
 import * as THREE from 'three';
-import { heightAt, R, SEA_FLOOR, SPRING, HILL } from './world.js';
+import { heightAt, R, SEA_FLOOR, SPRING, HILL } from './world.js?v=3';
 
 const tcache = new Map();
 export function ctex(key, w, h, draw) {
